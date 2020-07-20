@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>var blogsList = [];
+        var count = 0;
+        function addBlog() {
+            var blogObject = {};
+            blogObject.name = document.getElementById("articlesName").value;
+            blogObject.data = document.getElementById("articleBody").innerHTML;
+            if (blogObject.name != '' && blogObject.data != '') {
+                blogsList.push({ blogObject });
+                console.log(blogsList);
+                document.getElementById("blogs_list").append(createAccordian(blogObject));
+                alert("Your Article has been submitted");
+            }
+        }
+        function createAccordian(blogData) {
+            var accordianDiv = document.createElement("div");
+            accordianDiv.setAttribute("class", "card blog");
+            var accordianHead = document.createElement("div");
+            accordianHead.setAttribute("class", "card-header");
+            var target = "#collapse" + count;
+            var id = "collapse" + count;
+            var button = document.createElement("button");
+            button.setAttribute("class", "btn btn-link");
+            button.setAttribute("type", "button");
+            button.setAttribute("data-toggle", "collapse");
+            button.setAttribute("data-target", target);
+            button.innerHTML = blogData.name;
+            accordianHead.appendChild(button);
+            var accordianBody = document.createElement("div");
+            accordianBody.setAttribute("class", "collapse");
+            accordianBody.setAttribute("id", id);
+            accordianBody.setAttribute("data-parent", "#blogs_list");
+            var tempDiv = document.createElement("div");
+            tempDiv.setAttribute("class", "card-body");
+            tempDiv.innerHTML = blogData.data;
+            accordianBody.appendChild(tempDiv);
+            count++;
+            accordianDiv.appendChild(accordianHead);
+            accordianDiv.appendChild(accordianBody);
+            return accordianDiv;
+        }
+        function allowDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var data = event.dataTransfer.items;
+            console.log(data);
+            for (var i = 0; i < event.dataTransfer.items.length; i++) {
+                var imageData = event.dataTransfer.items[i].getAsFile();
+                var fileReader = new FileReader();
+
+                fileReader.onload = (ev) => {
+                    let img = new Image();
+                    img.src = ev.target.result;
+                    img.className = 'imageProperties'
+                    event.target.append(img);
+                }
+                fileReader.readAsDataURL(imageData);
+            }
+        }
+        function allowDrag(event) {
+            event.preventDefault();
+        }
+    </script>
+    <style>
+        .header {
+            height: 400px;
+            background-image: url(blogging-stats-featured.png);
+        }
+        .blog {
+            margin: 10px;
+        }
+        
+        .imageProperties {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .articleBody {
+            padding: 2px;
+            margin: 5px;
+            height: 500px;
+            overflow-y: scroll;
+        }
+
+        .submitArticle {
+            margin-top: 5px;
+        }
+        .blogsList {
+            padding : 5px;
+            height: 600px;
+            overflow-y: auto
+        }
+    </style>
+</head>
+<body>
+    <div class = "header">
+
+    </div>
+    <div class="row" style="margin-top:10px">
+        <div class="col-sm accordion blogsList" id="blogs_list">
+
+        </div>
+        <div class="col-sm blogs_add" id="blogs_add">
+            <h6>
+                Enter article's name :
+                <input type="text" id ="articlesName" name="articlesName" placeholder="Article's Name" />
+            </h6>
+            <h6>Enter your article here :</h6>
+            <div class="articleBody" id="articleBody" contenteditable="true" ondrop="allowDrop(event)" ondragover="allowDrag(event)"></div>
+            <button class="btn btn-primary submitArticle" onclick="addBlog()">Submit Article</button>
+        </div>
+    </div>
+</body>
+</html>
